@@ -60,9 +60,13 @@ goto :prompt_port
 echo [!] esptool not detected. Auto-installing now via pip...
 python -m pip install --upgrade esptool
 if errorlevel 1 (
-    echo [ERROR] Failed to install esptool via pip.
-    pause
-    exit /b 1
+    echo [WARNING] Standard pip install failed. Retrying with --user flag...
+    python -m pip install --user --upgrade esptool
+    if errorlevel 1 (
+        echo [ERROR] Failed to install esptool via pip.
+        pause
+        exit /b 1
+    )
 )
 echo   - esptool has been installed successfully.
 

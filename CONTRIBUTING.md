@@ -13,7 +13,7 @@ Please be respectful, collaborative, and constructive when opening issues or par
 ## How to Contribute
 
 ### 1. Reporting Bugs
-- Search existing [GitHub Issues](https://github.com/your-username/ESP8266-PixelMatrix/issues) to ensure the bug has not already been reported.
+- Search existing [GitHub Issues](https://github.com/chetanngavali/PixelMatrix/issues) to ensure the bug has not already been reported.
 - Provide clear details:
   - ESP8266 board model (NodeMCU V2, V3, D1 Mini, etc.).
   - LED strip model and pixel count.
@@ -21,25 +21,20 @@ Please be respectful, collaborative, and constructive when opening issues or par
   - Serial monitor boot log output at 115200 baud.
   - Steps to reproduce the issue.
 
-### 2. Suggesting New Lighting Effects
-- New FastLED animation routines should be added to `firmware/src/effects.cpp` and declared in `firmware/src/effects.h`.
-- **Non-blocking rule**: Never use `delay()` inside animation effects. Frame timing must be driven by `millis()` or fractional step calculations so the ESP8266 network stack and watchdog timer are not starved.
+### 2. Suggesting New Lighting Effects & Features
+- Suggestions and improvements can be submitted via Pull Requests or Issues maintained by **[Chetan Ngavali](https://github.com/chetanngavali)**.
+- Frame timing must be driven by `millis()` or fractional step calculations so the ESP8266 network stack and watchdog timer are not starved.
 - Animations should perform smoothly at 45 FPS on 200 pixels.
-
-### 3. Web Dashboard Enhancements
-- The web frontend is located in `firmware/data/` (`index.html`, `style.css`, `app.js`).
-- The user interface is strictly designed around a **clean, modern light theme** with lavender/indigo accents, crisp cards, and soft shadows.
-- Minimize external dependencies: Vanilla HTML, CSS, and modern JavaScript are preferred to minimize flash footprint in LittleFS.
 
 ---
 
 ## Development Workflow
 
-1. **Fork the repository** on GitHub.
+1. **Fork the repository** on GitHub: [https://github.com/chetanngavali/PixelMatrix](https://github.com/chetanngavali/PixelMatrix)
 2. **Clone your fork**:
    ```bash
-   git clone https://github.com/your-username/ESP8266-PixelMatrix.git
-   cd ESP8266-PixelMatrix/firmware
+   git clone https://github.com/chetanngavali/PixelMatrix.git
+   cd PixelMatrix
    ```
 3. **Create a feature branch**:
    ```bash

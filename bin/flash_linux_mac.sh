@@ -2,7 +2,8 @@
 set -e
 
 echo "============================================================"
-echo "   ESP8266 PixelMatrix 200 - Auto-Installer & Flasher (Linux/macOS)  "
+echo "   ESP8266 PixelMatrix 200 - Auto-Installer & Flasher      "
+echo "   Developed by Chetan Ngavali (@chetanngavali)            "
 echo "============================================================"
 echo ""
 

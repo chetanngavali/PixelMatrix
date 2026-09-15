@@ -3,6 +3,7 @@
 [![PlatformIO](https://img.shields.io/badge/PlatformIO-Compatible-orange.svg?logo=platformio)](https://platformio.org/)
 [![Framework](https://img.shields.io/badge/Framework-Arduino%20(ESP8266)-blue.svg?logo=arduino)](https://github.com/esp8266/Arduino)
 [![Board](https://img.shields.io/badge/Board-ESP8266%2012E%20NodeMCU-brightgreen.svg)](https://nodemcu.readthedocs.io/)
+[![Developer](https://img.shields.io/badge/Developer-chetanngavali-10b981.svg?logo=github)](https://github.com/chetanngavali)
 [![LEDs](https://img.shields.io/badge/LEDs-200%20x%20WS2812B-red.svg)](#core-specifications)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
@@ -227,6 +228,13 @@ esptool.py --chip esp8266 --port COM6 --baud 460800 write_flash 0x00000 bin/merg
 
 ---
 
+## Author & Developer
+
+Designed and developed with ❤️ by **[Chetan Ngavali](https://github.com/chetanngavali)** ([@chetanngavali](https://github.com/chetanngavali))
+
+---
+
 ## License
 
 This project is open source and licensed under the [MIT License](LICENSE).
+

@@ -3,6 +3,7 @@ setlocal
 
 echo ============================================================
 echo   ESP8266 PixelMatrix 200 - Auto-Installer and Flasher
+echo   Developed by Chetan Ngavali [@chetanngavali]
 echo ============================================================
 echo.
 

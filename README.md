@@ -1,11 +1,25 @@
-# ESP8266 PixelMatrix 200
+<div align="center">
+
+# 🌈 ESP8266 PixelMatrix 200
+
+**Universal Real-Time Screen-to-LED Ambient Lighting & Dynamic Matrix Controller**
+
+[![Repo Views](https://hits.sh/github.com/chetanngavali/PixelMatrix.svg?view=today-total&style=for-the-badge&label=Repo%20Views&color=7c3aed&extraColor=0f172a)](https://hits.sh/github.com/chetanngavali/PixelMatrix/)
+[![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fchetanngavali%2FPixelMatrix&label=Visitors&labelColor=%230f172a&countColor=%232563eb&style=for-the-badge)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fchetanngavali%2FPixelMatrix)
+[![Stars](https://img.shields.io/github/stars/chetanngavali/PixelMatrix?style=for-the-badge&color=7c3aed&logo=github)](https://github.com/chetanngavali/PixelMatrix/stargazers)
+[![Forks](https://img.shields.io/github/forks/chetanngavali/PixelMatrix?style=for-the-badge&color=2563eb&logo=github)](https://github.com/chetanngavali/PixelMatrix/network/members)
+[![Issues](https://img.shields.io/github/issues/chetanngavali/PixelMatrix?style=for-the-badge&color=f59e0b&logo=github)](https://github.com/chetanngavali/PixelMatrix/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/chetanngavali/PixelMatrix?style=for-the-badge&color=10b981&logo=github)](https://github.com/chetanngavali/PixelMatrix/commits/main)
+
+<br/>
 
 [![PlatformIO](https://img.shields.io/badge/PlatformIO-Compatible-orange.svg?logo=platformio)](https://platformio.org/)
 [![Framework](https://img.shields.io/badge/Framework-Arduino%20(ESP8266)-blue.svg?logo=arduino)](https://github.com/esp8266/Arduino)
 [![Board](https://img.shields.io/badge/Board-ESP8266%2012E%20NodeMCU-brightgreen.svg)](https://nodemcu.readthedocs.io/)
 [![Developer](https://img.shields.io/badge/Developer-chetanngavali-10b981.svg?logo=github)](https://github.com/chetanngavali)
-[![LEDs](https://img.shields.io/badge/LEDs-200%20x%20WS2812B-red.svg)](#core-specifications)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
+
+</div>
 
 **ESP8266 PixelMatrix 200** is an open-source, production-grade addressable LED controller and real-time **Dynamic Screen Sync (Ambilight)** ambient lighting system designed to drive arbitrary WS2812/WS2812B LED counts directly from an **ESP8266 12E NodeMCU** board **without any logic level shifter**.
 
@@ -226,6 +240,24 @@ esptool.py --chip esp8266 --port COM6 --baud 460800 write_flash 0x00000 bin/merg
 - [Safety Precautions & Guidelines](docs/SAFETY.md) — Overcurrent protection, fuses, fire safety, and thermal limits.
 - [15-Point Troubleshooting Guide](docs/TROUBLESHOOTING.md) — Diagnostic steps for hardware, Wi-Fi, and data line issues.
 - [Contributing Guidelines](CONTRIBUTING.md) — Guidelines for submitting issues, features, and pull requests.
+
+---
+
+## 📈 Repository Analytics & Star History
+
+<div align="center">
+
+Track real-time community engagement, star trajectory, and traffic growth for **PixelMatrix**:
+
+### 🌟 Star Growth Chart
+[![Star History Chart](https://api.star-history.com/svg?repos=chetanngavali/PixelMatrix&type=Date)](https://star-history.com/#chetanngavali/PixelMatrix&Date)
+
+<br/>
+
+### 👥 Contributors
+[![Contributors](https://contrib.rocks/image?repo=chetanngavali/PixelMatrix)](https://github.com/chetanngavali/PixelMatrix/graphs/contributors)
+
+</div>
 
 ---
 

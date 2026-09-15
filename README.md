@@ -7,9 +7,9 @@
 [![LEDs](https://img.shields.io/badge/LEDs-200%20x%20WS2812B-red.svg)](#core-specifications)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
-**ESP8266 PixelMatrix 200** is an open-source, production-grade addressable LED controller designed to drive **200 physical WS2812B LEDs** directly from an **ESP8266 12E NodeMCU** board **without any logic level shifter**.
+**ESP8266 PixelMatrix 200** is an open-source, production-grade addressable LED controller and real-time **Dynamic Screen Sync (Ambilight)** ambient lighting system designed to drive arbitrary WS2812/WS2812B LED counts directly from an **ESP8266 12E NodeMCU** board **without any logic level shifter**.
 
-Featuring a non-blocking FastLED animation engine, distributed 5-point power injection, persistent flash preset storage, high-speed binary WebSocket telemetry streaming (20 FPS live pixel preview), Wi-Fi AP fallback, and an embedded modern light-theme web dashboard stored in LittleFS.
+Featuring a native Windows/macOS/Linux desktop screen capture app (30–60 FPS), dynamic 4-sided LED layout designer, saturation-weighted color extraction, non-blocking FastLED animation engine, persistent flash storage, low-latency binary WebSocket streaming, Wi-Fi AP fallback, and an embedded modern light-theme web dashboard.
 
 ---
 
@@ -217,6 +217,7 @@ esptool.py --chip esp8266 --port COM6 --baud 460800 write_flash 0x00000 bin/merg
 
 ## Documentation Index
 
+- [Real-Time Screen Sync (Ambilight) Guide](docs/SCREEN_SYNC.md) — Dynamic LED layout editor, color extraction, desktop app, and calibration.
 - [Wiring Guide & Schematics](docs/WIRING.md) — Comprehensive wiring topology and direct 3.3V logic explanation.
 - [Hardware BOM & Pinout](docs/HARDWARE.md) — Detailed bill of materials, NodeMCU pin assignments, and wire gauges.
 - [Power System Engineering & Math](docs/POWER.md) — Current, wattage, voltage drop calculations, and power injection math.

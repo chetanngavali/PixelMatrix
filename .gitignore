@@ -20,3 +20,7 @@ desktop.ini
 *.hex
 *.o
 *.a
+ 
+__pycache__/
+*.pyc
+*.pyo

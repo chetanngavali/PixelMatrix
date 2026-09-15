@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 echo ============================================================
 echo   PixelMatrix Screen Sync - Desktop App Launcher
-echo   Developed by Chetan Ngavali [@chetanngavali]
+echo   Developed by Chetan Gavali [@chetanngavali]
 echo ============================================================
 echo.
 

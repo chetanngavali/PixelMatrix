@@ -70,16 +70,25 @@ class ScreenCaptureEngine:
         """Initializes high-performance capture on the selected display."""
         self.selected_display_index = display_idx
         
-        # 1. Attempt DXGI capture
+        # 1. Attempt DXGI capture safely
         try:
             import dxcam
-            self._dxcam_camera = dxcam.create(output_idx=display_idx, output_color="BGR")
-            if self._dxcam_camera:
+            cam = dxcam.create(output_idx=display_idx, output_color="BGR")
+            if cam:
+                # Test a trial grab to ensure output duplication permission
+                test_f = cam.grab()
+                self._dxcam_camera = cam
                 self._backend = "DXGI"
                 logger.info(f"Initialized DXGI screen capture on display {display_idx}")
                 return True
         except Exception as e:
-            logger.info(f"DXGI capture not available ({e}), falling back to Windows GDI/PIL/Synthetic")
+            logger.info(f"DXGI capture not available ({e}), falling back to Windows GDI/MSS")
+            if hasattr(self, '_dxcam_camera') and self._dxcam_camera:
+                try:
+                    self._dxcam_camera.release()
+                except Exception:
+                    pass
+                self._dxcam_camera = None
 
         # 2. Fallback to mss / GDI capture
         try:
@@ -102,6 +111,12 @@ class ScreenCaptureEngine:
             except Exception:
                 pass
             self._dxcam_camera = None
+        if hasattr(self, '_sct') and self._sct:
+            try:
+                self._sct.close()
+            except Exception:
+                pass
+            self._sct = None
 
     def capture_frame(self) -> Optional[np.ndarray]:
         """

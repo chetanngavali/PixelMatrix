@@ -39,6 +39,7 @@ class ScreenSyncWebSocketClient:
             logger.info(f"Connecting to ESP8266 at {self.uri}...")
             self.websocket = await websockets.connect(
                 self.uri,
+                subprotocols=["arduino"],
                 open_timeout=4.0,   # Generous timeout for ESP8266 Wi-Fi handshake
                 ping_interval=None, # Disable ping/pong overhead for raw 60 FPS performance
                 close_timeout=1.5

@@ -20,6 +20,7 @@ from desktop.color.color_processor import ColorProcessor
 from desktop.network.ws_client import ScreenSyncWebSocketClient
 from desktop.config.config_manager import ConfigManager
 from desktop.ui.layout_canvas import LayoutCanvas
+from desktop.network.discovery import discover_esp
 
 class ScreenSyncApp(tk.Tk):
     def __init__(self):
@@ -62,6 +63,8 @@ class ScreenSyncApp(tk.Tk):
 
         # Start periodic UI diagnostics refresh
         self.after(500, self._periodic_ui_refresh)
+        # Automatically detect and verify ESP8266 on home Wi-Fi router
+        self.after(800, self._start_auto_discovery)
 
     def _setup_styles(self):
         style = ttk.Style(self)
@@ -321,9 +324,11 @@ class ScreenSyncApp(tk.Tk):
         row_ip = tk.Frame(parent, bg="#ffffff")
         row_ip.pack(fill="x", pady=6)
         tk.Label(row_ip, text="ESP IP Address:", width=14, anchor="w", bg="#ffffff").pack(side="left")
-        self.var_esp_ip = tk.StringVar(value=self.config_mgr.get("esp_ip", "192.168.1.50"))
-        entry_ip = tk.Entry(row_ip, textvariable=self.var_esp_ip, width=18)
+        self.var_esp_ip = tk.StringVar(value=self.config_mgr.get("esp_ip", "192.168.1.31"))
+        entry_ip = tk.Entry(row_ip, textvariable=self.var_esp_ip, width=15)
         entry_ip.pack(side="left", padx=4)
+        btn_find = tk.Button(row_ip, text="🔍 Auto-Find", bg="#ede9fe", fg="#6d28d9", font=("Segoe UI", 9, "bold"), bd=1, relief="solid", padx=6, pady=1, cursor="hand2", command=self._start_auto_discovery)
+        btn_find.pack(side="left", padx=4)
 
         row_port = tk.Frame(parent, bg="#ffffff")
         row_port.pack(fill="x", pady=6)
@@ -478,6 +483,22 @@ class ScreenSyncApp(tk.Tk):
             self.lbl_ws_status.config(text="● Connected to ESP", fg="#22c55e")
         else:
             self.lbl_ws_status.config(text=f"● {message}", fg="#ef4444")
+
+    def _start_auto_discovery(self):
+        self.lbl_ws_status.config(text="● Searching for ESP on Wi-Fi...", fg="#f59e0b")
+        def _worker():
+            current_ip = self.var_esp_ip.get().strip()
+            found_ip = discover_esp(fallback_ip=current_ip)
+            if found_ip:
+                self.after(0, lambda: self._on_esp_discovered(found_ip))
+            else:
+                self.after(0, lambda: self.lbl_ws_status.config(text="● ESP not found (Check Wi-Fi)", fg="#ef4444"))
+        threading.Thread(target=_worker, daemon=True).start()
+
+    def _on_esp_discovered(self, ip: str):
+        self.var_esp_ip.set(ip)
+        self.config_mgr.set("esp_ip", ip)
+        self.lbl_ws_status.config(text=f"● Discovered ESP at {ip}", fg="#22c55e")
 
     def toggle_screen_sync(self):
         if self.is_syncing:

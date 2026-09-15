@@ -13,7 +13,7 @@ logger = logging.getLogger("ScreenSync.Config")
 CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screen_sync_config.json")
 
 DEFAULT_CONFIG = {
-    "esp_ip": "192.168.1.50",
+    "esp_ip": "192.168.1.31",
     "esp_ws_port": 81,
     "monitor_index": 0,
     "target_fps": 60,

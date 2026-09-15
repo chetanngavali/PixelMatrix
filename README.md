@@ -14,42 +14,111 @@ Featuring a non-blocking FastLED animation engine, distributed 5-point power inj
 
 ## Key Hardware Architecture
 
-```
-                    ESP8266 NodeMCU
-                           |
-                     Pin D1 (GPIO 5)
-                           |
-                      330Ω - 470Ω
-                           |
-                           v
-                     DIN [LED #1]
-                           |
-                          DO
-                           |
-                           v
-                     DIN [LED #2]
-                           |
-                          ...
-                           |
-                           v
-                    DIN [LED #200]
+```mermaid
+graph TD
+    subgraph Controller ["🎛️ ESP8266 12E NodeMCU (160 MHz)"]
+        MCU_D1["Pin D1 (GPIO 5)<br><i>Direct 3.3V Output</i>"]
+        MCU_GND["GND Pin<br><i>Common Ground</i>"]
+        MCU_VIN["VIN Pin<br><i>5V Board Power</i>"]
+    end
 
-                 5V / 20A Regulated PSU
-                           |
-          +----------------+----------------+
-          |                |                |
-      LED #1 +5V      LED #100 +5V     LED #200 +5V
-      (Also #50)                        (Also #150)
-          |                |                |
-      LED #1 GND      LED #100 GND     LED #200 GND
-          +----------------+----------------+
-                           |
-                        PSU GND
-                           |
-                   ESP8266 GND (Common Ground)
+    subgraph Protection ["⚡ Signal & Transient Protection"]
+        RES["330Ω–470Ω Resistor<br><i>Anti-Ringing Damping</i>"]
+        CAP["1000µF Low-ESR Capacitor<br><i>Inrush Surge Buffer</i>"]
+        FUSE["15A / 20A Blade Fuse<br><i>Overcurrent Safety</i>"]
+    end
 
-1000µF 16V Capacitor across +5V & GND near LED #1 input
+    subgraph PSU ["🔌 5V / 20A Regulated Power Supply (100W)"]
+        PSU_VCC["+5V Output Terminal"]
+        PSU_GND["GND Output Terminal"]
+    end
+
+    subgraph LED_Strip ["🌈 200 x WS2812B Addressable LED Chain"]
+        LED1["<b>LED #1</b><br>DIN → DO"]
+        LED50["<b>LED #50</b><br>DIN → DO"]
+        LED100["<b>LED #100</b><br>DIN → DO"]
+        LED150["<b>LED #150</b><br>DIN → DO"]
+        LED200["<b>LED #200</b><br>DIN"]
+    end
+
+    %% Data Path
+    MCU_D1 ==>|Direct 3.3V Data| RES
+    RES ==>|Damped Signal| LED1
+    LED1 -.->|5V Serial Re-clocked| LED50
+    LED50 -.->|5V Serial Re-clocked| LED100
+    LED100 -.->|5V Serial Re-clocked| LED150
+    LED150 -.->|5V Serial Re-clocked| LED200
+
+    %% +5V Power Distribution Bus
+    PSU_VCC --> FUSE
+    FUSE ===>|AWG 14 Bus| CAP
+    CAP ===>|+5V Tap 1| LED1
+    FUSE ===>|+5V Tap 2| LED50
+    FUSE ===>|+5V Tap 3| LED100
+    FUSE ===>|+5V Tap 4| LED150
+    FUSE ===>|+5V Tap 5| LED200
+    FUSE -.->|+5V Logic| MCU_VIN
+
+    %% Common Ground Bus
+    PSU_GND ===>|AWG 14 Bus| CAP
+    CAP ===>|GND Tap 1| LED1
+    PSU_GND ===>|GND Tap 2| LED50
+    PSU_GND ===>|GND Tap 3| LED100
+    PSU_GND ===>|GND Tap 4| LED150
+    PSU_GND ===>|GND Tap 5| LED200
+    PSU_GND ===>|Common Ground Bond| MCU_GND
+
+    %% Modern Theme Styles
+    style Controller fill:#f5f3ff,stroke:#7c3aed,stroke-width:2px,color:#4c1d95
+    style PSU fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#1e40af
+    style LED_Strip fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b
+    style Protection fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#14532d
 ```
+
+<details>
+<summary><b>📐 Click to expand ASCII Hardware Schematic Blueprint</b></summary>
+
+```text
+╭────────────────────────────────────────────────────────────────────────╮
+│                        ESP8266 12E NodeMCU                             │
+│                     [Tensilica 32-bit @ 160MHz]                        │
+│                                                                        │
+│   [ VIN ]                      [ GND ]                [ Pin D1 / GPIO 5 ]
+╰──────┬────────────────────────────┬────────────────────────────┬───────╯
+       │ (+5V Power)                │ (Common Ground)            │ (Direct 3.3V Logic)
+       │                            │                            │
+       │                            │                       ┌────┴────┐
+       │                            │                       │  330 Ω  │ Series Resistor
+       │                            │                       └────┬────┘
+       │                            │                            │
+       │   ┌────────────────────────┴────────────────────────┐   │
+       │   │           GND Bus (AWG 14 Heavy Cable)          │   │
+       │   └──┬─────────────┬─────────────┬─────────────┬────┘   │
+       │      │             │             │             │        │
+       │      │             │             │             │        ▼ (Direct DIN)
+ ┌─────┴──────┴────┐  ┌─────┴─────┐ ┌─────┴─────┐ ┌─────┴─────┐ ┌────────────────┐
+ │     LED #1      │  │  LED #50  │ │  LED #100 │ │  LED #150 │ │    LED #200    │
+ │   [WS2812B]     ├──┤ [WS2812B] ├─┤ [WS2812B] ├─┤ [WS2812B] ├─┤   [WS2812B]    │
+ └─────┬──────┬────┘  └─────┬─────┘ └─────┬─────┘ └─────┬─────┘ └────────────────┘
+       │      │             │             │             │
+       │   ┌──┴─────────────┴─────────────┴─────────────┴────┐
+       │   │           +5V Bus (AWG 14 Heavy Cable)          │
+       │   └────────────────────────┬────────────────────────┘
+       │                            │
+ ┌─────┴────────────────────────────┴─────┐
+ │       1000 µF / 16V Low-ESR Cap        │
+ └──────────────────┬─────────────────────┘
+                    │
+           ┌────────┴────────┐
+           │ 15A / 20A Fuse  │ Inline Protection
+           └────────┬────────┘
+                    │
+      ┌─────────────┴─────────────┐
+      │  5V / 20A Regulated PSU   │
+      │   (100W Switching Supply) │
+      └───────────────────────────┘
+```
+</details>
 
 ### Core Specifications
 - **Microcontroller:** ESP8266 12E NodeMCU (Tensilica L106 32-bit clocked at **160 MHz**, 80KB RAM, 4MB Flash).

@@ -1,0 +1,22 @@
+# PlatformIO build artifacts and cache
+.pio
+.pioenvs
+.piolibdeps
+firmware/
+
+# IDE and Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary intermediate build files
+*.elf
+*.hex
+*.o
+*.a

@@ -457,6 +457,11 @@ class ScreenSyncApp(tk.Tk):
 
         host = self.var_esp_ip.get().strip()
         port = self.var_esp_port.get()
+        if self.ws_client:
+            try:
+                asyncio.run_coroutine_threadsafe(self.ws_client.disconnect(), self._async_loop)
+            except Exception:
+                pass
         self.ws_client = ScreenSyncWebSocketClient(host=host, port=port)
         self.ws_client.on_connection_change = self._on_ws_status_change
         asyncio.run_coroutine_threadsafe(self.ws_client.connect(), self._async_loop)

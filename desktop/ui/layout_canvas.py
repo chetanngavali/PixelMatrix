@@ -32,7 +32,7 @@ class LayoutCanvas(tk.Canvas):
 
     def update_live_colors(self, rgb_bytes: bytes):
         self.live_colors = rgb_bytes
-        self.redraw()
+        self.after_idle(self.redraw)
 
     def _on_resize(self, event):
         self.redraw()

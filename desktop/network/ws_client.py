@@ -21,7 +21,8 @@ class ScreenSyncWebSocketClient:
         self.websocket = None
         self.is_connected = False
         self.frame_seq = 0
-        self._send_queue = asyncio.Queue(maxsize=2) # Keep max 2 frames: drops stale frames automatically
+        self._loop: Optional[asyncio.AbstractEventLoop] = None
+        self._send_queue: Optional[asyncio.Queue] = None
         self._running = False
         self._worker_task: Optional[asyncio.Task] = None
         self._heartbeat_task: Optional[asyncio.Task] = None
@@ -32,6 +33,8 @@ class ScreenSyncWebSocketClient:
     async def connect(self):
         """Connects to the ESP8266 WebSocket server."""
         self._running = True
+        self._loop = asyncio.get_running_loop()
+        self._send_queue = asyncio.Queue(maxsize=2) # Created on the active running loop
         try:
             logger.info(f"Connecting to ESP8266 at {self.uri}...")
             self.websocket = await websockets.connect(
@@ -74,20 +77,24 @@ class ScreenSyncWebSocketClient:
             self.on_connection_change(False, "Disconnected")
 
     def queue_frame(self, rgb_data: bytes, led_count: int):
-        """Queues an RGB frame. If sender is busy, discards older queued frame to prevent lag."""
-        if not self.is_connected:
+        """Queues an RGB frame thread-safely from the capture thread to the network event loop."""
+        if not self.is_connected or self._send_queue is None or self._loop is None:
             return
         
         self.frame_seq = (self.frame_seq + 1) & 0xFFFF
         try:
             packet = build_screen_sync_frame(self.frame_seq, rgb_data, led_count)
-            # If queue is full, pop the oldest stale frame and insert the fresh one
-            if self._send_queue.full():
+            def _push():
+                if self._send_queue.full():
+                    try:
+                        self._send_queue.get_nowait()
+                    except asyncio.QueueEmpty:
+                        pass
                 try:
-                    self._send_queue.get_nowait()
-                except asyncio.QueueEmpty:
+                    self._send_queue.put_nowait(packet)
+                except asyncio.QueueFull:
                     pass
-            self._send_queue.put_nowait(packet)
+            self._loop.call_soon_threadsafe(_push)
         except Exception as e:
             logger.error(f"Error packing frame: {e}")
 

@@ -100,34 +100,68 @@ class ScreenSyncWebSocketClient:
             logger.error(f"Error packing frame: {e}")
 
     async def _sender_loop(self):
-        """Asynchronous worker pulling newest frame from queue and transmitting over socket."""
-        while self._running and self.is_connected:
+        """Asynchronous worker pulling newest frame from queue and transmitting over socket with auto-reconnect."""
+        while self._running:
+            if not self.is_connected:
+                # Attempt background reconnection
+                if self.on_connection_change:
+                    self.on_connection_change(False, "Reconnecting...")
+                try:
+                    if self.websocket:
+                        try:
+                            await self.websocket.close()
+                        except Exception:
+                            pass
+                        self.websocket = None
+                    await asyncio.sleep(1.5)
+                    logger.info(f"Attempting to reconnect to {self.uri}...")
+                    self.websocket = await websockets.connect(
+                        self.uri,
+                        subprotocols=["arduino"],
+                        open_timeout=3.0,
+                        ping_interval=None,
+                        close_timeout=1.0
+                    )
+                    self.is_connected = True
+                    logger.info("Successfully reconnected to ESP8266!")
+                    if self.on_connection_change:
+                        self.on_connection_change(True, "Connected")
+                except asyncio.CancelledError:
+                    break
+                except Exception as reconn_err:
+                    logger.debug(f"Reconnect attempt failed: {reconn_err}")
+                    await asyncio.sleep(1.0)
+                    continue
+
             try:
-                packet = await self._send_queue.get()
+                packet = await asyncio.wait_for(self._send_queue.get(), timeout=0.5)
                 if self.websocket and self.is_connected:
                     t0 = time.perf_counter()
                     await self.websocket.send(packet)
                     self.frames_sent += 1
                     self.last_sent_time = time.perf_counter() - t0
                 self._send_queue.task_done()
+            except asyncio.TimeoutError:
+                # No frame in 0.5s, loop and check state
+                continue
             except asyncio.CancelledError:
                 break
             except Exception as e:
                 logger.warning(f"WebSocket send error: {e}")
                 self.is_connected = False
                 if self.on_connection_change:
-                    self.on_connection_change(False, f"Send error: {e}")
-                break
+                    self.on_connection_change(False, f"Connection lost ({e})")
+                # Loop will handle reconnection on next iteration
 
     async def _heartbeat_loop(self):
         """Sends lightweight heartbeat every 1.5 seconds if no frames sent to prevent timeout."""
-        while self._running and self.is_connected:
+        while self._running:
             try:
                 await asyncio.sleep(1.5)
-                if time.perf_counter() - self.last_sent_time > 1.0 and self.websocket:
+                if self.is_connected and self.websocket and (time.perf_counter() - self.last_sent_time > 1.2):
                     hb = build_heartbeat_packet(self.frame_seq)
                     await self.websocket.send(hb)
             except asyncio.CancelledError:
                 break
             except Exception:
-                break
+                pass

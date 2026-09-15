@@ -319,26 +319,95 @@ class ScreenSyncApp(tk.Tk):
         self._chaser_running = False
 
     def _build_network_tab(self, parent):
-        tk.Label(parent, text="ESP8266 Connection", font=("Segoe UI", 11, "bold"), bg="#ffffff", fg="#1e293b").pack(anchor="w", pady=(0, 6))
+        # Scrollable Canvas for Network Tab
+        canvas = tk.Canvas(parent, bg="#ffffff", highlightthickness=0)
+        scrollbar = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
+        scroll_content = tk.Frame(canvas, bg="#ffffff")
 
-        row_ip = tk.Frame(parent, bg="#ffffff")
-        row_ip.pack(fill="x", pady=6)
-        tk.Label(row_ip, text="ESP IP Address:", width=14, anchor="w", bg="#ffffff").pack(side="left")
+        scroll_content.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        canvas.create_window((0, 0), window=scroll_content, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # --- Section 1: Screen Sync Connection ---
+        tk.Label(scroll_content, text="1. ESP8266 Screen Sync Connection", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg="#1e293b").pack(anchor="w", pady=(0, 4))
+
+        row_ip = tk.Frame(scroll_content, bg="#ffffff")
+        row_ip.pack(fill="x", pady=4)
+        tk.Label(row_ip, text="ESP IP Address:", width=13, anchor="w", bg="#ffffff", font=("Segoe UI", 9)).pack(side="left")
         self.var_esp_ip = tk.StringVar(value=self.config_mgr.get("esp_ip", "192.168.1.31"))
         entry_ip = tk.Entry(row_ip, textvariable=self.var_esp_ip, width=15)
         entry_ip.pack(side="left", padx=4)
-        btn_find = tk.Button(row_ip, text="🔍 Auto-Find", bg="#ede9fe", fg="#6d28d9", font=("Segoe UI", 9, "bold"), bd=1, relief="solid", padx=6, pady=1, cursor="hand2", command=self._start_auto_discovery)
-        btn_find.pack(side="left", padx=4)
+        btn_find = tk.Button(row_ip, text="🔍 Auto-Find", bg="#ede9fe", fg="#6d28d9", font=("Segoe UI", 8, "bold"), bd=1, relief="solid", padx=6, pady=1, cursor="hand2", command=self._start_auto_discovery)
+        btn_find.pack(side="left", padx=2)
 
-        row_port = tk.Frame(parent, bg="#ffffff")
-        row_port.pack(fill="x", pady=6)
-        tk.Label(row_port, text="WS Port:", width=14, anchor="w", bg="#ffffff").pack(side="left")
+        row_port = tk.Frame(scroll_content, bg="#ffffff")
+        row_port.pack(fill="x", pady=4)
+        tk.Label(row_port, text="WS Port:", width=13, anchor="w", bg="#ffffff", font=("Segoe UI", 9)).pack(side="left")
         self.var_esp_port = tk.IntVar(value=self.config_mgr.get("esp_ws_port", 81))
         entry_port = tk.Entry(row_port, textvariable=self.var_esp_port, width=8)
         entry_port.pack(side="left", padx=4)
 
-        btn_conn = tk.Button(parent, text="🔌 Connect / Disconnect", bg="#f1f5f9", fg="#0f172a", font=("Segoe UI", 10, "bold"), bd=1, relief="solid", pady=6, cursor="hand2", command=self._toggle_manual_connection)
-        btn_conn.pack(fill="x", pady=12)
+        btn_conn = tk.Button(scroll_content, text="🔌 Connect / Disconnect", bg="#f1f5f9", fg="#0f172a", font=("Segoe UI", 9, "bold"), bd=1, relief="solid", pady=4, cursor="hand2", command=self._toggle_manual_connection)
+        btn_conn.pack(fill="x", pady=(4, 10))
+
+        ttk.Separator(scroll_content, orient="horizontal").pack(fill="x", pady=6)
+
+        # --- Section 2: Wi-Fi Setup Guide & Network Layout ---
+        tk.Label(scroll_content, text="2. Network Layout & Wi-Fi Connection Guide", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg="#7c3aed").pack(anchor="w", pady=(0, 4))
+
+        info_box = tk.Frame(scroll_content, bg="#f8fafc", bd=1, relief="solid", padx=10, pady=8)
+        info_box.pack(fill="x", pady=4)
+
+        guide_text = (
+            "📌 STEP 1 (First-Time / New Wi-Fi Setup):\n"
+            "  • If ESP has no saved Wi-Fi, it broadcasts hotspot:\n"
+            "    SSID: PixelMatrix-Setup\n"
+            "    Password: pixel1234\n"
+            "  • Connect your PC or Phone Wi-Fi to 'PixelMatrix-Setup'.\n\n"
+            "📌 STEP 2 (Save Home Wi-Fi into ESP Flash):\n"
+            "  • Enter your Home Router SSID & Password below.\n"
+            "  • Click '📡 Save to ESP' (stored in ESP hardware flash).\n\n"
+            "📌 STEP 3 (Start Screen Sync on Home Wi-Fi):\n"
+            "  • Reconnect PC to your Home Wi-Fi router.\n"
+            "  • Click '🔍 Auto-Find', then '▶ START SCREEN SYNC'!"
+        )
+        tk.Label(info_box, text=guide_text, justify="left", font=("Segoe UI", 8), bg="#f8fafc", fg="#334155").pack(anchor="w")
+
+        ttk.Separator(scroll_content, orient="horizontal").pack(fill="x", pady=6)
+
+        # --- Section 3: Configure Wi-Fi on ESP Provisioner ---
+        tk.Label(scroll_content, text="3. Configure Wi-Fi on ESP8266", font=("Segoe UI", 10, "bold"), bg="#ffffff", fg="#1e293b").pack(anchor="w", pady=(0, 4))
+
+        row_prov_ip = tk.Frame(scroll_content, bg="#ffffff")
+        row_prov_ip.pack(fill="x", pady=3)
+        tk.Label(row_prov_ip, text="ESP Target IP:", width=13, anchor="w", bg="#ffffff", font=("Segoe UI", 9)).pack(side="left")
+        self.var_prov_ip = tk.StringVar(value="192.168.4.1")
+        tk.Entry(row_prov_ip, textvariable=self.var_prov_ip, width=15).pack(side="left", padx=4)
+        tk.Label(row_prov_ip, text="(192.168.4.1 in AP mode)", font=("Segoe UI", 8), fg="#64748b", bg="#ffffff").pack(side="left")
+
+        row_ssid = tk.Frame(scroll_content, bg="#ffffff")
+        row_ssid.pack(fill="x", pady=3)
+        tk.Label(row_ssid, text="Router SSID:", width=13, anchor="w", bg="#ffffff", font=("Segoe UI", 9)).pack(side="left")
+        self.var_wifi_ssid = tk.StringVar()
+        tk.Entry(row_ssid, textvariable=self.var_wifi_ssid, width=20).pack(side="left", padx=4)
+
+        row_pass = tk.Frame(scroll_content, bg="#ffffff")
+        row_pass.pack(fill="x", pady=3)
+        tk.Label(row_pass, text="Wi-Fi Password:", width=13, anchor="w", bg="#ffffff", font=("Segoe UI", 9)).pack(side="left")
+        self.var_wifi_pass = tk.StringVar()
+        tk.Entry(row_pass, textvariable=self.var_wifi_pass, show="*", width=20).pack(side="left", padx=4)
+
+        self.lbl_prov_status = tk.Label(scroll_content, text="", font=("Segoe UI", 8), bg="#ffffff", fg="#64748b", wraplength=340, justify="left")
+        self.lbl_prov_status.pack(fill="x", pady=(2, 6))
+
+        btn_save_wifi = tk.Button(scroll_content, text="📡 Save Wi-Fi to ESP8266 (Permanent Flash)", bg="#7c3aed", fg="#ffffff", font=("Segoe UI", 9, "bold"), bd=0, pady=6, cursor="hand2", command=self._send_wifi_to_esp)
+        btn_save_wifi.pack(fill="x", pady=(0, 12))
 
     def _on_layout_param_changed(self):
         try:
@@ -500,6 +569,35 @@ class ScreenSyncApp(tk.Tk):
         self.config_mgr.set("esp_ip", ip)
         self.lbl_ws_status.config(text=f"● Discovered ESP at {ip}", fg="#22c55e")
 
+    def _send_wifi_to_esp(self):
+        target_ip = self.var_prov_ip.get().strip()
+        ssid = self.var_wifi_ssid.get().strip()
+        pwd = self.var_wifi_pass.get()
+        if not ssid:
+            messagebox.showwarning("Missing SSID", "Please enter your Wi-Fi SSID / Network Name.")
+            return
+
+        self.lbl_prov_status.config(text=f"Sending credentials to http://{target_ip}/api/wifi...", fg="#f59e0b")
+
+        def _worker():
+            import urllib.request
+            import json
+            url = f"http://{target_ip}/api/wifi"
+            payload = json.dumps({"ssid": ssid, "password": pwd}).encode("utf-8")
+            req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=5.0) as resp:
+                    if resp.status == 200:
+                        msg = f"✓ Saved! ESP is connecting to '{ssid}'.\nNow reconnect PC to '{ssid}' & click 'Auto-Find'!"
+                        self.after(0, lambda: self.lbl_prov_status.config(text=msg, fg="#16a34a"))
+                    else:
+                        self.after(0, lambda: self.lbl_prov_status.config(text=f"Error: HTTP {resp.status}", fg="#dc2626"))
+            except Exception as e:
+                err_msg = f"Failed to reach ESP: {e}\nEnsure your PC Wi-Fi is connected to 'PixelMatrix-Setup'!"
+                self.after(0, lambda: self.lbl_prov_status.config(text=err_msg, fg="#dc2626"))
+
+        threading.Thread(target=_worker, daemon=True).start()
+
     def toggle_screen_sync(self):
         if self.is_syncing:
             self.stop_screen_sync()
@@ -534,10 +632,10 @@ class ScreenSyncApp(tk.Tk):
     def _capture_worker(self):
         """
         Ultra-low latency Screen Capture -> Mapping -> Color Extraction -> WS Pipeline
-        Operates targeting 60 FPS without unnecessary memory allocations.
+        Operates targeting 35 FPS for rock-solid stability and zero buffer bloat on ESP8266.
         """
         zones = self.canvas.zones
-        target_fps = 60
+        target_fps = self.config_mgr.get("target_fps", 35)
         frame_time = 1.0 / target_fps
         
         frames_cap = 0
@@ -547,21 +645,29 @@ class ScreenSyncApp(tk.Tk):
         while not self._stop_event.is_set():
             t0 = time.perf_counter()
 
-            # 1. Grab screen frame
-            frame = self.capture_engine.capture_frame()
-            if frame is None:
-                time.sleep(0.005)
+            try:
+                # 1. Grab screen frame
+                frame = self.capture_engine.capture_frame()
+                if frame is None:
+                    time.sleep(0.005)
+                    continue
+                frames_cap += 1
+
+                # 2. Extract colors & process
+                rgb_bytes = self.color_processor.extract_and_process(frame, zones)
+                frames_proc += 1
+
+                # 3. Stream to ESP8266
+                if self.ws_client and self.ws_client.is_connected:
+                    self.ws_client.queue_frame(rgb_bytes, len(zones))
+
+                # 4. Update UI Canvas
+                if frames_proc % 2 == 0:
+                    self.canvas.update_live_colors(rgb_bytes)
+
+            except Exception as err:
+                time.sleep(0.01)
                 continue
-            frames_cap += 1
-
-            # 2. Extract colors & process
-            t_proc_start = time.perf_counter()
-            rgb_bytes = self.color_processor.extract_and_process(frame, zones)
-            frames_proc += 1
-
-            # 3. Stream to ESP8266
-            if self.ws_client and self.ws_client.is_connected:
-                self.ws_client.queue_frame(rgb_bytes, len(zones))
 
             # 4. Update UI Canvas (downsampled to 30 FPS to preserve GUI performance)
             if frames_proc % 2 == 0:

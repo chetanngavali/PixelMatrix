@@ -20,7 +20,7 @@ from desktop.color.color_processor import ColorProcessor
 from desktop.network.ws_client import ScreenSyncWebSocketClient
 from desktop.config.config_manager import ConfigManager
 from desktop.ui.layout_canvas import LayoutCanvas
-from desktop.network.discovery import discover_esp
+from desktop.network.discovery import discover_esp, get_esp_info
 
 class ScreenSyncApp(tk.Tk):
     def __init__(self):
@@ -354,7 +354,20 @@ class ScreenSyncApp(tk.Tk):
         entry_port.pack(side="left", padx=4)
 
         btn_conn = tk.Button(scroll_content, text="🔌 Connect / Disconnect", bg="#f1f5f9", fg="#0f172a", font=("Segoe UI", 9, "bold"), bd=1, relief="solid", pady=4, cursor="hand2", command=self._toggle_manual_connection)
-        btn_conn.pack(fill="x", pady=(4, 10))
+        btn_conn.pack(fill="x", pady=(4, 6))
+
+        # Live Network Info Card
+        self.net_card = tk.Frame(scroll_content, bg="#f8fafc", bd=1, relief="solid", padx=8, pady=6)
+        self.net_card.pack(fill="x", pady=(0, 10))
+        
+        self.lbl_net_status = tk.Label(self.net_card, text="Status: Disconnected", font=("Segoe UI", 8, "bold"), bg="#f8fafc", fg="#64748b", anchor="w")
+        self.lbl_net_status.pack(fill="x")
+        
+        self.lbl_net_gateway = tk.Label(self.net_card, text="Default Gateway: --", font=("Segoe UI", 8), bg="#f8fafc", fg="#64748b", anchor="w")
+        self.lbl_net_gateway.pack(fill="x")
+
+        self.lbl_net_mac = tk.Label(self.net_card, text="ESP MAC: --", font=("Segoe UI", 8), bg="#f8fafc", fg="#64748b", anchor="w")
+        self.lbl_net_mac.pack(fill="x")
 
         ttk.Separator(scroll_content, orient="horizontal").pack(fill="x", pady=6)
 
@@ -568,6 +581,19 @@ class ScreenSyncApp(tk.Tk):
         self.var_esp_ip.set(ip)
         self.config_mgr.set("esp_ip", ip)
         self.lbl_ws_status.config(text=f"● Discovered ESP at {ip}", fg="#22c55e")
+        def _fetch_info():
+            info = get_esp_info(ip)
+            if info:
+                st = info.get("wifiStatus", "Connected")
+                gw = info.get("gateway", "N/A")
+                mac = info.get("mac", "N/A")
+                self.after(0, lambda: self._update_net_card(st, gw, mac))
+        threading.Thread(target=_fetch_info, daemon=True).start()
+
+    def _update_net_card(self, status: str, gateway: str, mac: str):
+        self.lbl_net_status.config(text=f"Status: {status}", fg="#16a34a" if "Connected" in status else "#f59e0b")
+        self.lbl_net_gateway.config(text=f"Default Gateway: {gateway}")
+        self.lbl_net_mac.config(text=f"ESP MAC: {mac}")
 
     def _send_wifi_to_esp(self):
         target_ip = self.var_prov_ip.get().strip()

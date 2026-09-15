@@ -67,6 +67,11 @@ def discover_esp(fallback_ip: str = "192.168.1.31", timeout: float = 1.0) -> Opt
                 
     return None
 
+def get_esp_info(ip: str, timeout: float = 1.0) -> Optional[dict]:
+    """Fetches full status dictionary from ESP8266."""
+    res = check_ip(ip, timeout=timeout)
+    return res[1] if res else None
+
 if __name__ == "__main__":
     print("Searching for PixelMatrix ESP8266 on local network...")
     ip = discover_esp()

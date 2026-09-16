@@ -2,7 +2,7 @@
 PixelMatrix Screen Sync - Desktop Controller GUI
 Modern, clean, light-themed desktop application with real-time screen capture,
 dynamic 4-side perimeter LED layout editor, calibration suite, and diagnostics.
-Developed by Chetan Ngavali (@chetanngavali).
+Developed by Chetan Gavali (@chetanngavali).
 """
 
 import sys
@@ -103,7 +103,7 @@ class ScreenSyncApp(tk.Tk):
 
         title_lbl = tk.Label(brand_frame, text="PixelMatrix Screen Sync", font=("Segoe UI", 16, "bold"), bg="#ffffff", fg="#7c3aed")
         title_lbl.pack(anchor="w")
-        sub_lbl = tk.Label(brand_frame, text="Real-Time Ambilight & LED Layout Designer • by Chetan Ngavali (@chetanngavali)", font=("Segoe UI", 9), bg="#ffffff", fg="#64748b")
+        sub_lbl = tk.Label(brand_frame, text="Real-Time Ambilight & LED Layout Designer • by Chetan Gavali (@chetanngavali)", font=("Segoe UI", 9), bg="#ffffff", fg="#64748b")
         sub_lbl.pack(anchor="w")
 
         # Master Sync Toggle Button

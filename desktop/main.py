@@ -1,6 +1,6 @@
 """
 PixelMatrix Screen Sync Desktop Application Entry Point
-Developed by Chetan Ngavali (@chetanngavali).
+Developed by Chetan Gavali (@chetanngavali).
 """
 
 import sys
@@ -16,7 +16,7 @@ from desktop.ui.main_window import ScreenSyncApp
 def main():
     print("============================================================")
     print("  PixelMatrix Dynamic Screen Sync Ambilight")
-    print("  Developed by Chetan Ngavali (@chetanngavali)")
+    print("  Developed by Chetan Gavali (@chetanngavali)")
     print("============================================================")
     app = ScreenSyncApp()
     app.mainloop()

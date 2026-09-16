@@ -6,6 +6,7 @@
 
 [![Repo Views](https://hits.sh/github.com/chetanngavali/PixelMatrix.svg?view=today-total&style=for-the-badge&label=Repo%20Views&color=7c3aed&extraColor=0f172a)](https://hits.sh/github.com/chetanngavali/PixelMatrix/)
 [![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fchetanngavali%2FPixelMatrix&label=Visitors&labelColor=%230f172a&countColor=%232563eb&style=for-the-badge)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fchetanngavali%2FPixelMatrix)
+[![Watchers](https://img.shields.io/github/watchers/chetanngavali/PixelMatrix?style=for-the-badge&color=06b6d4&logo=github&label=Watchers)](https://github.com/chetanngavali/PixelMatrix/watchers)
 [![Stars](https://img.shields.io/github/stars/chetanngavali/PixelMatrix?style=for-the-badge&color=7c3aed&logo=github)](https://github.com/chetanngavali/PixelMatrix/stargazers)
 [![Forks](https://img.shields.io/github/forks/chetanngavali/PixelMatrix?style=for-the-badge&color=2563eb&logo=github)](https://github.com/chetanngavali/PixelMatrix/network/members)
 [![Issues](https://img.shields.io/github/issues/chetanngavali/PixelMatrix?style=for-the-badge&color=f59e0b&logo=github)](https://github.com/chetanngavali/PixelMatrix/issues)
@@ -243,13 +244,20 @@ esptool.py --chip esp8266 --port COM6 --baud 460800 write_flash 0x00000 bin/merg
 
 ---
 
-## 📈 Repository Analytics & Star History
+## 📈 Repository Analytics & Community Engagement
 
 <div align="center">
 
-Track real-time community engagement, star trajectory, and traffic growth for **PixelMatrix**:
+Track real-time community engagement, repository watchers, star trajectory, and traffic growth for **PixelMatrix**:
 
-### 🌟 Star Growth Chart
+[![Watchers](https://img.shields.io/github/watchers/chetanngavali/PixelMatrix?style=for-the-badge&color=06b6d4&logo=github&label=Watchers)](https://github.com/chetanngavali/PixelMatrix/watchers)
+[![Repo Views](https://hits.sh/github.com/chetanngavali/PixelMatrix.svg?view=today-total&style=for-the-badge&label=Total%20Views&color=7c3aed&extraColor=0f172a)](https://hits.sh/github.com/chetanngavali/PixelMatrix/)
+[![Stars](https://img.shields.io/github/stars/chetanngavali/PixelMatrix?style=for-the-badge&color=7c3aed&logo=github)](https://github.com/chetanngavali/PixelMatrix/stargazers)
+[![Commit Activity](https://img.shields.io/github/commit-activity/m/chetanngavali/PixelMatrix?style=for-the-badge&label=Monthly%20Activity&color=10b981&logo=git)](https://github.com/chetanngavali/PixelMatrix/pulse)
+
+<br/>
+
+### 🌟 Star & Community Growth Trajectory
 [![Star History Chart](https://api.star-history.com/svg?repos=chetanngavali/PixelMatrix&type=Date)](https://star-history.com/#chetanngavali/PixelMatrix&Date)
 
 <br/>
@@ -263,7 +271,7 @@ Track real-time community engagement, star trajectory, and traffic growth for **
 
 ## Author & Developer
 
-Designed and developed with ❤️ by **[Chetan Ngavali](https://github.com/chetanngavali)** ([@chetanngavali](https://github.com/chetanngavali))
+Designed and developed with ❤️ by **[Chetan Gavali](https://github.com/chetanngavali)** ([@chetanngavali](https://github.com/chetanngavali))
 
 ---
 

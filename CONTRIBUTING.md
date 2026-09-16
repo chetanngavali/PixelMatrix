@@ -22,7 +22,7 @@ Please be respectful, collaborative, and constructive when opening issues or par
   - Steps to reproduce the issue.
 
 ### 2. Suggesting New Lighting Effects & Features
-- Suggestions and improvements can be submitted via Pull Requests or Issues maintained by **[Chetan Ngavali](https://github.com/chetanngavali)**.
+- Suggestions and improvements can be submitted via Pull Requests or Issues maintained by **[Chetan Gavali](https://github.com/chetanngavali)**.
 - Frame timing must be driven by `millis()` or fractional step calculations so the ESP8266 network stack and watchdog timer are not starved.
 - Animations should perform smoothly at 45 FPS on 200 pixels.
 
